@@ -53,21 +53,26 @@ impl Default for BitcoinWallet {
     }
 }
 
+/// This struct stores a [BitcoinAddress] and the corresponding [HDKey] that was used to derive it for a [BitcoinAddress] associated with a [BitcoinWallet].
 #[derive(Debug, Clone)]
 pub struct AssociatedAddress {
-    pub address: BitcoinAddress,
-    pub hd_key: HDKey,
+    address: BitcoinAddress,
+    hd_key: HDKey,
 }
 
 impl AssociatedAddress {
+    /// Constructs a new [AssociatedAddress] struct given a [BitcoinAddress] and the [HDKey] that corresponds to it.
+    /// The hd_key should be specified so that has the info for the derivation path of the address. 
     pub fn new(address: BitcoinAddress, hd_key: HDKey) -> Self {
         Self { address, hd_key }
     }
 
+    /// Returns the [BitcoinAddress] associated with this [AssociatedAddress].
     pub fn address(&self) -> &BitcoinAddress {
         &self.address
     }
 
+    /// Returns the [HDKey] associated with this [AssociatedAddress].
     pub fn hd_key(&self) -> &HDKey {
         &self.hd_key
     }
