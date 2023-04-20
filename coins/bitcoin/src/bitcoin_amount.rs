@@ -6,7 +6,7 @@ use std::ops;
 use walletd_coin_core::CryptoAmount;
 
 /// BitcoinAmount contains a field representing the amount of satoshis in the amount. It also has functions to convert to and from the main unit (BTC) and the smallest unit (satoshi).
-#[derive(Default, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 pub struct BitcoinAmount {
     /// The number of satoshis (u64) in the amount
     pub satoshi: u64,
