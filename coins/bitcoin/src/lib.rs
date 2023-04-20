@@ -15,7 +15,7 @@ pub use bitcoin::{
 
 mod bitcoin_address;
 pub use bitcoin_address::BitcoinAddress;
-mod bitcoin_wallet;
+pub mod bitcoin_wallet;
 pub use bitcoin_wallet::{BitcoinWallet, BitcoinWalletBuilder};
 mod bitcoin_amount;
 pub use bitcoin_amount::BitcoinAmount;
