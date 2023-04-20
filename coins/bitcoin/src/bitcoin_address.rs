@@ -114,35 +114,6 @@ impl BitcoinAddress {
         }
     }
 
-    /// Estimates the fee for a transaction with the given number of inputs and outputs given the fee per byte, makes use of default sizes to estimate the size of the tranasaction and the corresponding fee
-    fn estimate_fee_with_default_sizes(
-        is_segwit: bool,
-        num_inputs: usize,
-        num_outputs: usize,
-        byte_fee: f64,
-    ) -> Result<u64, Error> {
-        const NONSEGWIT_DEFAULT_BYTES_PER_INPUT: usize = 148;
-        const NONSEGWIT_DEFAULT_BYTES_PER_OUTPUT: usize = 34;
-        const NONSEGWIT_DEFAULT_BYTES_BASE: usize = 10;
-        const SEGWIT_DEFAULT_BYTES_PER_INPUT: usize = 102;
-        const SEGWIT_DEFAULT_BYTES_PER_OUTPUT: usize = 31;
-        const SEGWIT_DEFAULT_BYTES_BASE: usize = 10;
-
-        if is_segwit {
-            let tx_size = (num_inputs * NONSEGWIT_DEFAULT_BYTES_PER_INPUT)
-                + (num_outputs * NONSEGWIT_DEFAULT_BYTES_PER_OUTPUT)
-                + NONSEGWIT_DEFAULT_BYTES_BASE;
-            let estimated_fee = f64::ceil(byte_fee * (tx_size as f64)) as u64;
-            Ok(estimated_fee)
-        } else {
-            let tx_size = (num_inputs * SEGWIT_DEFAULT_BYTES_PER_INPUT)
-                + (num_outputs * SEGWIT_DEFAULT_BYTES_PER_OUTPUT)
-                + SEGWIT_DEFAULT_BYTES_BASE;
-            let estimated_fee = f64::ceil(byte_fee * (tx_size as f64)) as u64;
-            Ok(estimated_fee)
-        }
-    }
-
     /// Returns the address info related to this BitcoinAddress
     pub fn address_info(&self) -> AddressInfo {
         self.address_info.clone()
