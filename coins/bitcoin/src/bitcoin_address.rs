@@ -115,7 +115,7 @@ impl BitcoinAddress {
     }
 
     /// Estimates the fee for a transaction with the given number of inputs and outputs given the fee per byte, makes use of default sizes to estimate the size of the tranasaction and the corresponding fee
-    pub fn estimate_fee_with_default_sizes(
+    fn estimate_fee_with_default_sizes(
         is_segwit: bool,
         num_inputs: usize,
         num_outputs: usize,
