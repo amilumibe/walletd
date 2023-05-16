@@ -133,3 +133,4 @@ pub use walletd_hd_key::{HDKey, HDNetworkType, HDPath, HDPathBuilder, HDPathInde
 pub mod prelude;
 
 mod transaction;
+pub use transaction::{BitcoinSigningParameters, BitcoinTx, BitcoinTxParameters};

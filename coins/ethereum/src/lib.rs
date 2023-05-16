@@ -132,6 +132,9 @@ pub use walletd_coin_core::{
 };
 pub use walletd_hd_key::{HDKey, HDNetworkType, HDPath, HDPathBuilder, HDPathIndex, HDPurpose};
 
+mod transaction;
+pub use transaction::EthTx;
+
 /// Represents the format of an Ethereum address (checksummed or non-checksummed)
 #[derive(Default, Debug, Clone, Copy)]
 pub enum EthereumFormat {

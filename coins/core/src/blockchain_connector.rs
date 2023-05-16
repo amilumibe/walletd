@@ -1,4 +1,4 @@
-use crate::Error;
+use crate::{CryptoTx, Error};
 use async_trait::async_trait;
 
 /// Used to connect to a blockchain and send and receive information to and from the blockchain.
@@ -6,6 +6,8 @@ use async_trait::async_trait;
 pub trait BlockchainConnector {
     /// The type of error that is returned by the BlockchainConnector.
     type ErrorType: std::error::Error + Send + Sync + 'static;
+    /// The type of transaction that can be broadcasted to the blockchain.
+    type TxType: CryptoTx;
 
     /// Creates a new BlockchainConnector with a given url.
     fn new(url: &str) -> Result<Self, Self::ErrorType>
@@ -24,6 +26,10 @@ pub trait BlockchainConnector {
     {
         BlockchainConnectorBuilder::new()
     }
+
+    /// Broadcasts a prepared and signed transaction to the blockchain.
+    /// Returns an [error][Self::ErrorType] if the transaction is invalid or if the transaction could not be broadcasted.
+    fn broadcast_tx(&self, tx: &Self::TxType) -> Result<String, Self::ErrorType>;
 }
 
 /// Represents the type of blockchain connector that is being used.

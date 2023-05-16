@@ -2,15 +2,15 @@
 //!
 //!
 
+use crate::BitcoinTx;
 use async_trait::async_trait;
 use bitcoin::{Address, AddressType};
 use bitcoin_hashes::{sha256d, Hash};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use walletd_coin_core::BlockchainConnector;
-
 use time::format_description::well_known::Rfc2822;
 use time::{Duration, OffsetDateTime};
+use walletd_coin_core::BlockchainConnector;
 
 use crate::BitcoinAmount;
 
@@ -607,6 +607,7 @@ pub struct Blockstream {
 #[async_trait]
 impl BlockchainConnector for Blockstream {
     type ErrorType = Error;
+    type TxType = BitcoinTx;
 
     fn new(url: &str) -> Result<Self, Error> {
         Ok(Self {
@@ -617,6 +618,10 @@ impl BlockchainConnector for Blockstream {
 
     fn url(&self) -> &str {
         &self.url
+    }
+
+    fn broadcast_tx(&self, tx: &Self::TxType) -> Result<String, Error> {
+        unimplemented!()
     }
 }
 

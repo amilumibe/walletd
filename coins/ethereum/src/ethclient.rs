@@ -1,4 +1,5 @@
 use crate::Error;
+use crate::EthTx;
 use crate::EthereumAmount;
 use async_trait::async_trait;
 use log::info;
@@ -354,6 +355,8 @@ impl EthClient {
 #[async_trait]
 impl BlockchainConnector for EthClient {
     type ErrorType = Error;
+    type TxType = EthTx;
+
     /// Create a new instance of [EthClient] based on a given endpoint url.
     /// Returns an [error][Error] if the endpoint is invalid or the transport fails to connect.
     fn new(endpoint: &str) -> Result<Self, Error> {
@@ -369,5 +372,9 @@ impl BlockchainConnector for EthClient {
     /// Returns the url of the endpoint associated with the [EthClient].
     fn url(&self) -> &str {
         &self.endpoint
+    }
+
+    fn broadcast_tx(&self, _tx: &Self::TxType) -> Result<String, Self::ErrorType> {
+        unimplemented!()
     }
 }

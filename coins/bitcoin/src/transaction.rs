@@ -3,14 +3,16 @@ use crate::{BitcoinAddress, BitcoinAmount, BitcoinPrivateKey, BitcoinWallet, Cry
 use bitcoin::{ScriptBuf, TxIn, TxOut, Witness};
 use std::str::FromStr;
 
+/// Represents any Bitcoin transaction in WalletD.
 #[derive(Clone)]
-struct BitcoinTx {
+pub struct BitcoinTx {
     tx: bitcoin::Transaction,
     signers_addresses: Vec<String>,
 }
 
+/// Contains the specifications for a preparing a Bitcoin transaction.
 #[derive(Clone)]
-struct BitcoinTxParameters {
+pub struct BitcoinTxParameters {
     send_amount: BitcoinAmount,
     to_public_address: String,
     fee_sat_per_byte: f64,
@@ -71,8 +73,8 @@ impl TryFrom<BTransaction> for BitcoinTx {
         })
     }
 }
-
-struct BitcoinSigningParameters {
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct BitcoinSigningParameters {
     private_key: BitcoinPrivateKey,
 }
 
