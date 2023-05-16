@@ -136,8 +136,8 @@ impl BitcoinAddress {
     ///
     /// This method should be used in cases where either it is expected that the [public key][BitcoinPublicKey] is present or the [Error] is handled in the case that the [public key][BitcoinPublicKey] is not present.
     pub fn public_key(&self) -> Result<BitcoinPublicKey, Error> {
-        if let Some(key) = &self.public_key {
-            Ok(key.clone())
+        if let Some(key) = self.public_key {
+            Ok(key)
         } else {
             Err(Error::MissingPublicKey)
         }

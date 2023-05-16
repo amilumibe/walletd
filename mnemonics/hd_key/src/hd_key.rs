@@ -6,13 +6,27 @@ use std::fmt;
 use std::str::FromStr;
 
 use ripemd::Ripemd160;
+use zeroize::{Zeroize, ZeroizeOnDrop};
 
 use crate::{Error, HDPath, HDPathIndex, HDPurpose, Seed};
 
 /// A wrapper around the [secp256k1::SecretKey]
 /// struct to be used with [HDKey].
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ExtendedPrivateKey(secp256k1::SecretKey);
+
+impl Zeroize for ExtendedPrivateKey {
+    fn zeroize(&mut self) {
+        secp256k1::SecretKey::from_slice(&[0u8; 32]).expect("Should be able to create a default ExtendedPrivateKey for zeroize");
+    }
+}
+
+impl Drop for ExtendedPrivateKey {
+    fn drop(&mut self) {
+        self.zeroize();
+    }
+}
+
 
 impl ExtendedPrivateKey {
     /// Creates a new [ExtendedPrivateKey] from a slice of bytes.
@@ -212,10 +226,10 @@ impl HDKey {
         let new_deriv_path = HDPath::from_str(derivation_path)?;
         let new_deriv_path_info = new_deriv_path.to_vec();
         let parent_deriv_path = self.derivation_path.to_vec();
-        let mut private_key = self.extended_private_key.expect("Missing private key");
+        let mut private_key = self.extended_private_key.clone().expect("Missing private key");
         let mut chain_code = self.chain_code;
         let mut parent_fingerprint = [0u8; 4];
-        let mut parent_private_key = private_key;
+        let mut parent_private_key = private_key.clone();
         let mut depth = self.depth;
         let mut child_index = self.child_index;
         let mut start_path_depth = 0;
@@ -278,7 +292,7 @@ impl HDKey {
 
             parent_fingerprint.copy_from_slice(&Self::hash160(&parent_public_key.to_bytes())[0..4]);
 
-            parent_private_key = private_key;
+            parent_private_key = private_key.clone();
             depth += 1;
             deriv_path.push(*item);
         }
@@ -297,7 +311,7 @@ impl HDKey {
 
         let derived_bip32 = Self {
             chain_code,
-            extended_private_key: Some(private_key),
+            extended_private_key: Some(private_key.clone()),
             extended_public_key: Some(ExtendedPublicKey::from_private_key(&private_key)),
             depth,
             parent_fingerprint,
@@ -332,8 +346,8 @@ impl HDKey {
     ///
     /// Returns an [error][Error] if the extended private key is missing
     pub fn extended_private_key(&self) -> Result<ExtendedPrivateKey, Error> {
-        if let Some(private_key) = self.extended_private_key {
-            Ok(private_key)
+        if let Some(private_key) = &self.extended_private_key {
+            Ok(private_key.clone())
         } else {
             Err(Error::MissingPrivateKey)
         }
@@ -387,7 +401,7 @@ impl HDKey {
 
     /// Extended Private Key Serialization
     pub fn extended_private_key_serialized(&self) -> Result<String, Error> {
-        if let Some(extended_private_key) = self.extended_private_key {
+        if let Some(extended_private_key) = &self.extended_private_key {
             let prefix = self.private_key_prefix()?;
             let mut result = [0u8; 82];
             result[0..4].copy_from_slice(&prefix);
