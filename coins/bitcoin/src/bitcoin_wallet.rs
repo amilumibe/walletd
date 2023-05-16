@@ -1,9 +1,9 @@
+use crate::bitcoin::blockdata::script;
 use crate::blockstream::{BTransaction, Blockstream, FeeEstimates, Input, InputType, Output, Utxo};
-use crate::BitcoinAddress;
 use crate::BitcoinAmount;
 use crate::Error;
+use crate::{AddressInfo, BitcoinAddress, BitcoinPrivateKey, BitcoinPublicKey};
 use async_trait::async_trait;
-use bitcoin::blockdata::script;
 use std::cmp::Reverse;
 use walletd_bip39::Seed;
 use walletd_coin_core::CryptoAddress;
@@ -12,14 +12,11 @@ use walletd_coin_core::{CryptoAmount, CryptoWallet};
 use walletd_hd_key::slip44;
 use walletd_hd_key::{HDKey, HDNetworkType, HDPath, HDPathBuilder, HDPathIndex, HDPurpose};
 
-use bitcoin::script::PushBytes;
+use crate::bitcoin::script::PushBytes;
 
 use ::secp256k1::{Message, Secp256k1, SecretKey};
 
-pub use bitcoin::{
-    sighash::EcdsaSighashType, Address, AddressType, Network, PrivateKey as BitcoinPrivateKey,
-    PublicKey as BitcoinPublicKey, Script,
-};
+pub use bitcoin::{sighash::EcdsaSighashType, AddressType, Network, Script};
 
 const DEFAULT_GAP_LIMIT: usize = 20;
 
@@ -837,7 +834,7 @@ impl BitcoinWallet {
         inputs_available_tx_info: &[BTransaction],
         send_amount: &BitcoinAmount,
         receiver_view_wallet: &BitcoinAddress,
-        change_addr: Address,
+        change_addr: AddressInfo,
     ) -> Result<(BTransaction, Vec<usize>), Error> {
         // TODO(AS): Add check here to limit the transaction to address types that are supported
         // choose inputs
